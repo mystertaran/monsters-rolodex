@@ -9,6 +9,8 @@ const App = () => {
   const [monsters, setMonsters] = useState([]);
   const [filteredMonsters, setFilterMonsters] = useState(monsters);
 
+  console.log("rendered");
+
   useEffect(() => {
     // Callback function will run only if the values inside [] dependency have changed!!!
     fetch("https://jsonplaceholder.typicode.com/users")
