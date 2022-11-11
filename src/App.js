@@ -1,13 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import CardList from "./components/card-list/card-list.component.jsx";
 import SearchBox from "./components/search-box/search-box.component.jsx";
 import "./App.css";
 
 const App = () => {
-  console.log("render");
   const [searchField, setSearchField] = useState(""); // [value, setValue]
-  console.log(searchField);
+  const [monsters, setMonsters] = useState([]);
+  const [filteredMonsters, setFilterMonsters] = useState(monsters);
+
+  useEffect(() => {
+    // Callback function will run only if the values inside [] dependency have changed!!!
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((users) => setMonsters(users));
+  }, []); // we let it empty, because we dont want to call back this API rerender
+
+  useEffect(() => {
+    const newFilteredMonsters = monsters.filter((monster) => {
+      return monster.name.toLocaleLowerCase().includes(searchField);
+    });
+
+    setFilterMonsters(newFilteredMonsters);
+  }, [monsters, searchField]);
 
   const onSearchChange = (event) => {
     const searchFieldString = event.target.value.toLocaleLowerCase();
@@ -23,13 +38,7 @@ const App = () => {
         onChangeHandler={onSearchChange}
         placeholder="search monsters"
       />
-
-      {/*<SearchBox
-        className="monsters-search-box"
-        onChangeHandler={onSearchChange}
-        placeholder="search monsters"
-      />
-  <CardList monsters={filteredMonsters} />*/}
+      <CardList monsters={filteredMonsters} />
     </div>
   );
 };
